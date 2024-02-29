@@ -1,32 +1,33 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+﻿using Coding.WebApi.Authorization;
+using Coding.WebApi.Services.Interface;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Coding.WebApi.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class MovieController : ControllerBase
     {
-        // GET: api/<MovieController>
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
+        private readonly IMovieService _movieService;
+        public MovieController(IMovieService movieService)
         {
-            return Ok();
+            _movieService = movieService;
         }
 
-        // POST api/<MovieController>/Like/{id}
+        [HttpGet("userId")]
+        public async Task<IActionResult> GetAll(int userId)
+        {
+            return await Task.FromResult<IActionResult>(Ok(_movieService.GetAllMovieAsync(userId)));
+        }
+
         [HttpPost("Like/{id}")]
-        public async Task<IActionResult> Like(int id, [FromBody] string userId)
-        {
-            return Ok();
-        }
+        public async Task<bool> Like(int id, [FromBody] int userId) => await _movieService.LikeMovieAsync(id, userId, true);
 
-        // POST api/<MovieController>/Dislike/{id}
         [HttpPost("Dislike/{id}")]
-        public async Task<IActionResult> Dislike(int id, [FromBody] string userId)
+        public async Task<IActionResult> Dislike(int id, [FromBody] int userId)
         {
-            return Ok();
+            return await Task.FromResult<IActionResult>(Ok(_movieService.LikeMovieAsync(id, userId, false)));
         }
     }
 }
