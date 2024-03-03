@@ -16,12 +16,14 @@ namespace Coding.WebApi.Controllers
             _userService = userService;
         }
 
+        [AllowAnonymous]
         [HttpPost("Register")]
         public async Task<UserRegisterDto> Register([FromBody] UserRegisterRequest userRegisterRequest)
         {
             return await _userService.RegisterAsync(userRegisterRequest);
         }
 
+        [AllowAnonymous]
         [HttpPost("Login")]
         public async Task<UserLoginDto> Login([FromBody] UserLoginRequest userLoginRequest)
         { 
