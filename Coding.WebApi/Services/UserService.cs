@@ -26,7 +26,7 @@ namespace Coding.WebApi.Services
         {
             User user = await GetUserByUserNameAsync(request.Username);
 
-            if (user == null || BCrypt.Net.BCrypt.Verify(request.Password, user.Password))
+            if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.Password))
                 throw new AppException("Username or password is incorrect");
 
             UserLoginDto response = _mapper.Map<UserLoginDto>(user);
@@ -42,6 +42,7 @@ namespace Coding.WebApi.Services
             User user = new()
             {
                 Name = request.Name,
+                Username = request.Username,
                 Password = request.Password,
             };
 
